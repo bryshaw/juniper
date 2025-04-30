@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Juniper Solar Cleaning Co.</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #1f1f1f;
+      color: #f4f4f4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+    }
+
+    .logo {
+      max-width: 250px;
+      margin-bottom: 2rem;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      color: #ffa500;
+    }
+
+    p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+    }
+
+    .email-link {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background-color: #ffa500;
+      color: #000;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+
+    .email-link:hover {
+      background-color: #e69500;
+    }
+  </style>
+</head>
+<body>
+  <img src="/mnt/data/JSCCLOGO.png" alt="Juniper Solar Cleaning Co. Logo" class="logo" />
+  <h1>Juniper Solar Cleaning Co.</h1>
+  <p>Website coming soon. We're getting things cleaned up!</p>
+  <a class="email-link" href="mailto:hello@junipersolarco.com">Contact Us</a>
+</body>
+</html>
