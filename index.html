@@ -1,70 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Juniper Solar Cleaning Co.</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Helvetica Neue', sans-serif;
-      background-color: #F4F4F3;
-      color: #1C1D21;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      padding: 2rem;
-    }
-
-    .logo {
-      max-width: 200px;
-      margin-bottom: 1.5rem;
-    }
-
-    h1 {
-      font-size: 2rem;
-      letter-spacing: 2px;
-      color: #ffa500;
-      margin-bottom: 1rem;
-    }
-
-    p {
-      max-width: 500px;
-      font-size: 1.1rem;
-      margin-bottom: 2rem;
-    }
-
-    .contact {
-      font-size: 1rem;
-      font-weight: bold;
-      background-color: #ffa500;
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      color: #000;
-      text-decoration: none;
-    }
-
-    .contact:hover {
-      background-color: #ffb733;
-    }
-
-    footer {
-      margin-top: 3rem;
-      font-size: 0.85rem;
-      color: #999;
-    }
-  </style>
-</head>
-<body>
-
-  <img src="JSCCLOGO.png" alt="Juniper Solar Cleaning Co. Logo" class="logo">
-
-  <h1>Juniper Solar Cleaning Co.</h1>
-  <p>
-    Professional solar panel cleaning built for the desert. Rugged. Reliable. Restoring your panel performance with every wash.
-  </p>
-
 <!-- Calculator UI -->
 <div id="solar-calculator-wrapper" style="position: relative;">
   <div id="floatingWarning" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #FC4800; color: #1C1C1E; font-weight: bold; padding: 1rem 2rem; border-radius: 8px; z-index: 20; box-shadow: 0 0 20px rgba(0,0,0,0.4); font-size: 1rem; transition: opacity 0.5s ease;">
@@ -119,25 +52,14 @@
 
   function selectDirtiness(level) {
     selectedPricing = level;
-    if (level === 'surface') {
-      selectedDirtiness = 0.18;
-      document.getElementById('surfaceBtn').style.backgroundColor = '#FC4800';
-      document.getElementById('surfaceBtn').style.color = 'white';
-      document.getElementById('surfaceBtn').style.borderColor = '#FC4800';
+    selectedDirtiness = level === 'surface' ? 0.18 : 0.30;
+    document.getElementById('surfaceBtn').style.backgroundColor = level === 'surface' ? '#FC4800' : '#FFFFFF';
+    document.getElementById('surfaceBtn').style.color = level === 'surface' ? 'white' : '#1C1C1E';
+    document.getElementById('surfaceBtn').style.borderColor = level === 'surface' ? '#FC4800' : '#1C1C1E';
 
-      document.getElementById('deepBtn').style.backgroundColor = '#FFFFFF';
-      document.getElementById('deepBtn').style.color = '#1C1C1E';
-      document.getElementById('deepBtn').style.borderColor = '#1C1C1E';
-    } else {
-      selectedDirtiness = 0.30;
-      document.getElementById('deepBtn').style.backgroundColor = '#FC4800';
-      document.getElementById('deepBtn').style.color = 'white';
-      document.getElementById('deepBtn').style.borderColor = '#FC4800';
-
-      document.getElementById('surfaceBtn').style.backgroundColor = '#FFFFFF';
-      document.getElementById('surfaceBtn').style.color = '#1C1C1E';
-      document.getElementById('surfaceBtn').style.borderColor = '#1C1C1E';
-    }
+    document.getElementById('deepBtn').style.backgroundColor = level === 'deep' ? '#FC4800' : '#FFFFFF';
+    document.getElementById('deepBtn').style.color = level === 'deep' ? 'white' : '#1C1C1E';
+    document.getElementById('deepBtn').style.borderColor = level === 'deep' ? '#FC4800' : '#1C1C1E';
   }
 
   function calculateSavings() {
@@ -166,16 +88,64 @@
       return;
     }
 
-    runResidentialEstimate(numPanels);
+    // Inline replacement for runResidentialEstimate()
+    const panelWattage = 0.375;
+    const PSH = 7.5;
+    const daysPerYear = 365;
+    const baseRate = 0.1976;
+    const futureRates = [0.2230, 0.2335, 0.2438, 0.2545];
+    const biAnnual = document.getElementById('biAnnualToggle').checked;
+
+    const systemSize = numPanels * panelWattage;
+    const cleanOutput = systemSize * PSH * daysPerYear;
+    const lostOutput = (cleanOutput / 2) * selectedDirtiness;
+    const recoveredEnergy = biAnnual ? lostOutput * 2 : lostOutput;
+    const grossSavings = recoveredEnergy * baseRate;
+
+    let cost = 0;
+    const overage = numPanels - 15;
+    if (selectedPricing === 'surface' && !biAnnual) cost = 180 + (overage > 0 ? overage * 7 : 0);
+    if (selectedPricing === 'deep' && !biAnnual) cost = 225 + (overage > 0 ? overage * 9 : 0);
+    if (selectedPricing === 'surface' && biAnnual) cost = 330 + (overage > 0 ? overage * 5 * 2 : 0);
+    if (selectedPricing === 'deep' && biAnnual) cost = 400 + (overage > 0 ? overage * 7 * 2 : 0);
+
+    const netSavings = grossSavings - cost;
+    let fiveYearGross = grossSavings;
+    futureRates.forEach(rate => fiveYearGross += recoveredEnergy * rate);
+    const fiveYearNet = fiveYearGross - (cost * 5);
+
+    let html = `
+      <h3 style="color: #FC4800;">Estimated Annual Savings</h3>
+      <p><strong>System Size:</strong> ${systemSize.toFixed(2)} kW</p>
+      <p><strong>Annual Clean Output:</strong> ${cleanOutput.toFixed(0)} kWh</p>
+      <p><strong>Recovered Energy:</strong> ${recoveredEnergy.toFixed(0)} kWh</p>
+      <p><strong>Gross Savings:</strong> <span style="color: #F5A623;">$${grossSavings.toFixed(2)}</span></p>
+      <p><strong>Service Cost:</strong> <span style="color: #D0021B;">-$${cost.toFixed(2)}</span></p>
+      <p><strong style="color: #1C1C1E;">Net Savings (This Year):</strong> <span style="color: #7ED321;">$${netSavings.toFixed(2)}</span></p>
+      <p style="margin-top: 0.5rem;">(Based on ${biAnnual ? 'two cleanings' : 'one cleaning'} per year)</p>
+    `;
+
+    if (numPanels >= 30) {
+      html += `
+        <hr style="margin: 1rem 0;">
+        <div style="background: #FFF3E0; border: 2px dashed #FC4800; padding: 1rem; border-radius: 8px;">
+          <strong>Recommendation:</strong><br>
+          With 30+ panels, consider a <strong>quarterly plan</strong> to maximize efficiency year-round.
+        </div>
+      `;
+    }
+
+    html += `
+      <div style="margin-top: 1rem; background: #E6F4EA; padding: 1rem; border-left: 6px solid #7ED321; border-radius: 6px;">
+        <strong>Even just 5% efficiency gain adds up.</strong><br>
+        But this isn’t just about savings — it protects your <strong>$20,000+ system</strong>, prevents long-term damage, and keeps your home looking great.
+      </div>
+      <p style="margin-top: 1rem; font-size: 0.9rem; color: #1C1C1E;">
+        <strong>5-Year Net Savings:</strong> <span style="color: #4CAF50;">$${fiveYearNet.toFixed(2)}</span><br>
+        Based on rising IID rates: 22.3¢ (2026), 24.4¢ (2028), and beyond.
+      </p>
+    `;
+
+    document.getElementById('results').innerHTML = html;
   }
 </script>
-
-
-<a href="mailto:hello@junipersolarco.com" class="contact">Get a Free Quote</a>
-
-<footer>
-  &copy; 2025 Juniper Solar Cleaning Co.
-</footer>
-
-</body>
-</html>
