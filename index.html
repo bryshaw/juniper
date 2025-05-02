@@ -1,61 +1,139 @@
 <!-- Calculator UI -->
-<div id="solar-calculator-wrapper" style="position: relative;">
-  <div id="floatingWarning" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #FC4800; color: #1C1C1E; font-weight: bold; padding: 1rem 2rem; border-radius: 8px; z-index: 20; box-shadow: 0 0 20px rgba(0,0,0,0.4); font-size: 1rem; transition: opacity 0.5s ease;">
-    Minimum panel count is 15.
+
+<div id="solar-calculator" style="max-width: 600px; margin: 2rem auto; font-family: Futura, sans-serif; border: 4px solid #1C1C1E; border-radius: 12px; background: #FFFFFF; padding: 2rem;">
+  <h2 style="color: #FC4800;">Juniper's Solar Savings Estimator</h2>
+
+<label style="font-weight: bold; display: block; margin-top: 1rem;">Number of Panels</label> <input type="number" id="numPanels" value="15" min="15" style="width: 100%; padding: 0.5rem; margin-bottom: 1.5rem; border: 2px solid #1C1C1E;" />
+
+<label style="font-weight: bold;">Cleanliness Level</label>
+
+  <div style="display: flex; gap: 1rem; margin: 1rem 0;">
+    <button id="surfaceBtn" onclick="selectDirtiness('surface')" style="flex: 1; padding: 1rem; border: 3px solid #FC4800; background: #FC4800; color: white; font-weight: bold; border-radius: 8px; cursor: pointer;">
+      Light Dust
+      <div style="font-weight: normal; font-size: 0.85rem;">Mild dirt</div>
+    </button>
+    <button id="deepBtn" onclick="selectDirtiness('deep')" style="flex: 1; padding: 1rem; border: 3px solid #1C1C1E; background: #FFFFFF; color: #1C1C1E; font-weight: bold; border-radius: 8px; cursor: pointer;">
+      Heavy Buildup
+      <div style="font-weight: normal; font-size: 0.85rem;">Thick grime / droppings</div>
+    </button>
   </div>
 
-  <div id="solar-calculator" style="max-width: 600px; margin: 2rem auto; font-family: Futura, sans-serif; border: 4px solid #1C1C1E; border-radius: 12px; background: #FFFFFF; padding: 2rem;">
-    <h2 style="color: #FC4800;">Juniper's Solar Savings Estimator</h2>
+  <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: bold;">
+    <input type="checkbox" id="biAnnualToggle" style="transform: scale(1.2); margin: 0;" />
+    Estimate with Bi-Annual Cleaning Plan
+  </label>
 
-    <label style="font-weight: bold; display: block; margin-top: 1rem;">Number of Panels</label>
-    <input type="number" id="numPanels" value="15" min="15" oninput="checkMinPanels(this)" onblur="checkMinPanels(this)" style="width: 100%; padding: 0.5rem; margin-bottom: 0.5rem; border: 2px solid #1C1C1E;" />
+<button onclick="calculateSavings()" style="background-color: #FC4800; color: white; font-weight: bold; border: none; padding: 0.75rem 1.5rem; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 1rem;">Calculate Savings</button>
 
-    <label style="font-weight: bold;">Cleanliness Level</label>
-    <div style="display: flex; gap: 1rem; margin: 1rem 0;">
-      <button id="surfaceBtn" onclick="selectDirtiness('surface')" style="flex: 1; padding: 1rem; border: 3px solid #FC4800; background: #FC4800; color: white; font-weight: bold; border-radius: 8px; cursor: pointer;">
-        Light Dust
-        <div style="font-weight: normal; font-size: 0.85rem;">Mild dirt</div>
-      </button>
-      <button id="deepBtn" onclick="selectDirtiness('deep')" style="flex: 1; padding: 1rem; border: 3px solid #1C1C1E; background: #FFFFFF; color: #1C1C1E; font-weight: bold; border-radius: 8px; cursor: pointer;">
-        Heavy Buildup
-        <div style="font-weight: normal; font-size: 0.85rem;">Thick grime / droppings</div>
-      </button>
-    </div>
+  <div id="results" style="margin-top: 2rem; padding: 1rem; background-color: #F5F5F5; border-radius: 8px; color: #1C1C1E;"></div>
 
-    <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: bold;">
-      <input type="checkbox" id="biAnnualToggle" style="transform: scale(1.2); margin: 0;" />
-      Estimate with Bi-Annual Cleaning Plan
-    </label>
-
-    <button onclick="calculateSavings()" style="background-color: #FC4800; color: white; font-weight: bold; border: none; padding: 0.75rem 1.5rem; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 1rem;">Calculate Savings</button>
-
-    <div id="commercialPrompt" style="display: none; margin-top: 1rem; background: #FFF3E0; border: 2px solid #FC4800; padding: 1rem; border-radius: 8px;">
-      <p>This looks like a commercial or solar farm job. Would you like a commercial quote?</p>
-      <button onclick="handleCommercialChoice(true)" style="background: #FC4800; color: white; font-weight: bold; border: none; padding: 0.5rem 1rem; border-radius: 4px; margin-right: 0.5rem;">Yes</button>
-      <button onclick="handleCommercialChoice(false)" style="background: #1C1C1E; color: white; font-weight: bold; border: none; padding: 0.5rem 1rem; border-radius: 4px;">No</button>
-    </div>
-
-    <div id="results" style="margin-top: 2rem; padding: 1rem; background-color: #F5F5F5; border-radius: 8px; color: #1C1C1E;"></div>
-
-    <p style="margin-top: 1.5rem; font-size: 0.8rem; color: #888; text-align: center;">
-      <em>Disclaimer:</em> All figures shown are estimates based on average solar output, local sun exposure, and current IID utility rates. Actual savings may vary based on system condition, shading, maintenance history, and environmental factors. Juniper Solar Cleaning Co. is not liable for financial decisions made based on this tool.
-    </p>
-  </div>
+  <p style="margin-top: 1.5rem; font-size: 0.8rem; color: #888; text-align: center;">
+    <em>Disclaimer:</em> All figures shown are estimates based on average solar output, local sun exposure, and current IID utility rates. Actual savings may vary based on system condition, shading, maintenance history, and environmental factors. Juniper Solar Cleaning Co. is not liable for financial decisions made based on this tool.
+  </p>
 </div>
 
+<!-- Calculator Logic -->
+
 <script>
-  function checkMinPanels(input) {
-    const floatingWarning = document.getElementById('floatingWarning');
-    if (parseFloat(input.value) < 15) {
-      floatingWarning.style.display = 'block';
-      floatingWarning.style.opacity = 1;
-      setTimeout(() => {
-        floatingWarning.style.opacity = 0;
-        setTimeout(() => {
-          floatingWarning.style.display = 'none';
-          input.value = 15;
-        }, 500);
-      }, 2000);
+  let selectedDirtiness = 0.18;
+  let selectedPricing = 'light';
+
+  function selectDirtiness(level) {
+    selectedPricing = level;
+    if (level === 'surface') {
+      selectedDirtiness = 0.18;
+      document.getElementById('surfaceBtn').style.backgroundColor = '#FC4800';
+      document.getElementById('surfaceBtn').style.color = 'white';
+      document.getElementById('surfaceBtn').style.borderColor = '#FC4800';
+
+      document.getElementById('deepBtn').style.backgroundColor = '#FFFFFF';
+      document.getElementById('deepBtn').style.color = '#1C1C1E';
+      document.getElementById('deepBtn').style.borderColor = '#1C1C1E';
+    } else {
+      selectedDirtiness = 0.30;
+      document.getElementById('deepBtn').style.backgroundColor = '#FC4800';
+      document.getElementById('deepBtn').style.color = 'white';
+      document.getElementById('deepBtn').style.borderColor = '#FC4800';
+
+      document.getElementById('surfaceBtn').style.backgroundColor = '#FFFFFF';
+      document.getElementById('surfaceBtn').style.color = '#1C1C1E';
+      document.getElementById('surfaceBtn').style.borderColor = '#1C1C1E';
     }
   }
+
+  function calculateSavings() {
+    let numPanels = parseFloat(document.getElementById('numPanels').value);
+    if (isNaN(numPanels) || numPanels < 15) {
+      numPanels = 15;
+      document.getElementById('numPanels').value = 15;
+    }
+
+    const panelWattage = 0.375;
+    const PSH = 7.5;
+    const daysPerYear = 365;
+    const baseRate = 0.1976;
+    const futureRates = [0.2230, 0.2335, 0.2438, 0.2545];
+    const biAnnual = document.getElementById('biAnnualToggle').checked;
+
+    const systemSize = numPanels * panelWattage;
+    const cleanOutput = systemSize * PSH * daysPerYear;
+    const lostOutput = (cleanOutput / 2) * selectedDirtiness;
+    const recoveredEnergy = biAnnual ? lostOutput * 2 : lostOutput;
+    const grossSavings = recoveredEnergy * baseRate;
+
+    // Pricing logic
+    let cost = 0;
+    let basePanels = 15;
+    let overage = numPanels - basePanels;
+
+    if (selectedPricing === 'surface' && !biAnnual) cost = 180 + (overage > 0 ? overage * 7 : 0);
+    if (selectedPricing === 'deep' && !biAnnual) cost = 225 + (overage > 0 ? overage * 9 : 0);
+    if (selectedPricing === 'surface' && biAnnual) cost = 330 + (overage > 0 ? overage * 5 * 2 : 0);
+    if (selectedPricing === 'deep' && biAnnual) cost = 400 + (overage > 0 ? overage * 7 * 2 : 0);
+
+    const netSavings = grossSavings - cost;
+
+    let fiveYearGross = grossSavings;
+    futureRates.forEach(rate => fiveYearGross += recoveredEnergy * rate);
+    const fiveYearNet = fiveYearGross - (cost * 5);
+
+    // Results
+    let html = `
+      <h3 style="color: #FC4800;">Estimated Annual Savings</h3>
+      <p><strong>System Size:</strong> ${systemSize.toFixed(2)} kW</p>
+      <p><strong>Annual Clean Output:</strong> ${cleanOutput.toFixed(0)} kWh</p>
+      <p><strong>Recovered Energy:</strong> ${recoveredEnergy.toFixed(0)} kWh</p>
+      <p><strong>Gross Savings:</strong> <span style="color: #F5A623;">$${grossSavings.toFixed(2)}</span></p>
+      <p><strong>Service Cost:</strong> <span style="color: #D0021B;">-$${cost.toFixed(2)}</span></p>
+      <p><strong style="color: #1C1C1E;">Net Savings (This Year):</strong> <span style="color: #7ED321;">$${netSavings.toFixed(2)}</span></p>
+    `;
+
+    html += `<p style="margin-top: 0.5rem;">(Based on ${biAnnual ? 'two cleanings' : 'one cleaning'} per year)</p>`;
+
+    if (numPanels >= 30) {
+      html += `
+        <hr style="margin: 1rem 0;">
+        <div style="background: #FFF3E0; border: 2px dashed #FC4800; padding: 1rem; border-radius: 8px;">
+          <strong>Recommendation:</strong><br>
+          With 30+ panels, consider a <strong>quarterly plan</strong> to maximize efficiency year-round.
+        </div>
+      `;
+    }
+
+    html += `
+      <div style="margin-top: 1rem; background: #E6F4EA; padding: 1rem; border-left: 6px solid #7ED321; border-radius: 6px;">
+        <strong>Even just 5% efficiency gain adds up.</strong><br>
+        But this isn’t just about savings — it protects your <strong>$20,000+ system</strong>, prevents long-term damage, and keeps your home looking great.
+      </div>
+
+      <p style="margin-top: 1rem; font-size: 0.9rem; color: #1C1C1E;">
+        <strong>5-Year Net Savings:</strong> <span style="color: #4CAF50;">$${fiveYearNet.toFixed(2)}</span><br>
+        Based on rising IID rates: 22.3¢ (2026), 24.4¢ (2028), and beyond.
+      </p>
+    `;
+
+    document.getElementById('results').innerHTML = html;
+  }
+
+  selectDirtiness('surface');
 </script>
