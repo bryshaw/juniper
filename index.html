@@ -8,7 +8,7 @@
     <h2 style="color: #FC4800;">Juniper's Solar Savings Estimator</h2>
 
     <label style="font-weight: bold; display: block; margin-top: 1rem;">Number of Panels</label>
-    <input type="number" id="numPanels" value="15" min="15" oninput="enforceMinPanelCount(this)" style="width: 100%; padding: 0.5rem; margin-bottom: 0.5rem; border: 2px solid #1C1C1E;" />
+    <input type="number" id="numPanels" value="15" min="15" style="width: 100%; padding: 0.5rem; margin-bottom: 0.5rem; border: 2px solid #1C1C1E;" />
 
     <label style="font-weight: bold;">Cleanliness Level</label>
     <div style="display: flex; gap: 1rem; margin: 1rem 0;">
@@ -69,21 +69,6 @@
       document.getElementById('surfaceBtn').style.backgroundColor = '#FFFFFF';
       document.getElementById('surfaceBtn').style.color = '#1C1C1E';
       document.getElementById('surfaceBtn').style.borderColor = '#1C1C1E';
-    }
-  }
-
-  function enforceMinPanelCount(input) {
-    const floatingWarning = document.getElementById('floatingWarning');
-    if (parseInt(input.value) < 15) {
-      floatingWarning.style.display = 'block';
-      floatingWarning.style.opacity = 1;
-      setTimeout(() => {
-        floatingWarning.style.opacity = 0;
-        setTimeout(() => {
-          floatingWarning.style.display = 'none';
-          input.value = 15;
-        }, 500);
-      }, 2000);
     }
   }
 
