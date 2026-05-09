@@ -1,177 +1,384 @@
-<!-- Calculator UI -->
-<div id="solar-calculator-wrapper" style="position: relative;">
-  <div id="floatingWarning" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #1C1C1E; color: #FFFFFF; font-weight: bold; padding: 1rem 2rem; border-radius: 8px; z-index: 20; box-shadow: 0 0 15px rgba(0,0,0,0.4); transition: opacity 0.5s ease; text-align: center;">
-    Minimum panel count is 15.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mr. Juniper — Mission Control</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue: #007DBA;
+  --blue-dark: #005f8e;
+  --blue-dim: rgba(0,125,186,0.12);
+  --gold: #FFC727;
+  --gold-dim: rgba(255,199,39,0.15);
+  --gold-dark: #a07c00;
+  --coral: #E65C3A;
+  --coral-dim: rgba(230,92,58,0.12);
+  --navy: #283044;
+  --navy2: #1e2535;
+  --navy3: #161c28;
+  --cream: #FEF6E4;
+  --neutral: #F2F3F2;
+  --white: #ffffff;
+  --muted: #6b7d8f;
+  --text: #b8c8d8;
+  --font: 'Montserrat', sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--navy3); color: var(--text); font-family: var(--font); min-height: 100vh; overflow-x: hidden; }
+body::before { content: ''; position: fixed; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.015) 3px, rgba(0,0,0,0.015) 4px); pointer-events: none; z-index: 1000; }
+
+/* TAGLINE */
+.tagline { background: var(--blue); padding: 0.45rem 2rem; text-align: center; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.18em; color: var(--white); text-transform: uppercase; }
+.tagline em { color: var(--gold); font-style: normal; }
+
+/* HEADER */
+.header { background: var(--navy2); padding: 1.125rem 2rem; border-bottom: 3px solid var(--blue); display: flex; align-items: center; justify-content: space-between; }
+.logo-group { display: flex; align-items: center; gap: 0.875rem; }
+.logo-badge { width: 42px; height: 42px; background: var(--blue); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; }
+.logo-name { font-size: 1.1rem; font-weight: 800; color: var(--white); letter-spacing: 0.08em; text-transform: uppercase; line-height: 1; }
+.logo-name span { color: var(--gold); }
+.logo-sub { font-size: 0.58rem; font-weight: 600; color: var(--muted); letter-spacing: 0.2em; text-transform: uppercase; margin-top: 0.2rem; }
+.header-right { display: flex; align-items: center; gap: 1.25rem; }
+.live-pill { display: flex; align-items: center; gap: 0.4rem; background: var(--blue-dim); border: 1px solid rgba(0,125,186,0.3); border-radius: 100px; padding: 0.28rem 0.7rem; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.15em; color: var(--blue); text-transform: uppercase; }
+.pulse { width: 6px; height: 6px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 6px var(--blue); animation: blink 2s infinite; }
+@keyframes blink { 0%,100%{opacity:1}50%{opacity:0.3} }
+.timestamp { font-size: 0.62rem; font-weight: 500; color: var(--muted); }
+
+/* GOAL STRIP */
+.goal-strip { background: var(--navy2); border-bottom: 1px solid rgba(255,255,255,0.05); padding: 1.125rem 2rem; display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; }
+.goal-lbl { font-size: 0.58rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+.goal-nums { display: flex; align-items: baseline; gap: 0.4rem; }
+.goal-curr { font-size: 1.9rem; font-weight: 800; color: var(--white); line-height: 1; }
+.goal-sep { font-size: 1.1rem; color: var(--muted); }
+.goal-tgt { font-size: 1.3rem; font-weight: 700; color: var(--muted); }
+.goal-badge { background: var(--blue-dim); border: 1px solid rgba(0,125,186,0.3); border-radius: 100px; padding: 0.22rem 0.7rem; font-size: 0.67rem; font-weight: 700; color: var(--blue); }
+.goal-track-wrap { flex: 1; min-width: 180px; }
+.goal-track { height: 7px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden; }
+.goal-fill { height: 100%; width: 81%; background: linear-gradient(90deg, var(--blue), #00a8f0); border-radius: 4px; box-shadow: 0 0 10px rgba(0,125,186,0.4); }
+.goal-gap-group { text-align: right; }
+.goal-gap-amt { font-size: 1.4rem; font-weight: 800; color: var(--gold); line-height: 1; }
+.goal-gap-lbl { font-size: 0.55rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-top: 0.12rem; }
+
+/* MAIN */
+.main { padding: 1.25rem 2rem 2rem; }
+
+/* GRID */
+.grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.875rem; margin-bottom: 0.875rem; }
+
+/* CARD */
+.card { background: var(--navy2); border-radius: 12px; padding: 1.125rem; position: relative; overflow: hidden; transition: transform 0.2s; border: 1px solid rgba(255,255,255,0.05); animation: up 0.45s ease both; }
+.card:hover { transform: translateY(-2px); }
+@keyframes up { from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)} }
+.card:nth-child(1){animation-delay:.05s}.card:nth-child(2){animation-delay:.1s}.card:nth-child(3){animation-delay:.15s}.card:nth-child(4){animation-delay:.2s}.card:nth-child(5){animation-delay:.25s}.card:nth-child(6){animation-delay:.3s}
+
+.card::before { content:''; position:absolute; top:0;left:0;right:0; height:3px; }
+.card.ok { border-color: rgba(0,125,186,0.2); }
+.card.ok::before { background: var(--blue); }
+.card.warn { border-color: rgba(255,199,39,0.2); }
+.card.warn::before { background: var(--gold); }
+.card.bad { border-color: rgba(230,92,58,0.25); animation: up 0.45s ease both, glow 3s infinite; }
+.card.bad::before { background: var(--coral); }
+@keyframes glow { 0%,100%{box-shadow:none}50%{box-shadow:0 0 18px rgba(230,92,58,0.1)} }
+
+.card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.8rem; }
+.card-lbl { font-size: 0.58rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+.chip { font-size: 0.56rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.18rem 0.55rem; border-radius: 100px; }
+.chip-ok { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(0,125,186,0.25); }
+.chip-warn { background: var(--gold-dim); color: var(--gold-dark); border: 1px solid rgba(255,199,39,0.25); }
+.chip-bad { background: var(--coral-dim); color: var(--coral); border: 1px solid rgba(230,92,58,0.25); }
+
+.card-val { font-size: 2.8rem; font-weight: 800; line-height: 1; margin-bottom: 0.2rem; }
+.ok .card-val { color: var(--white); }
+.warn .card-val { color: var(--gold); }
+.bad .card-val { color: var(--coral); }
+
+.card-meta { font-size: 0.58rem; font-weight: 600; color: var(--muted); letter-spacing: 0.08em; margin-bottom: 0.8rem; text-transform: uppercase; }
+
+.bar { height: 5px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden; margin-bottom: 0.8rem; }
+.bar-fill { height: 100%; border-radius: 3px; }
+.ok .bar-fill { background: var(--blue); box-shadow: 0 0 8px rgba(0,125,186,0.5); }
+.warn .bar-fill { background: var(--gold); box-shadow: 0 0 8px rgba(255,199,39,0.4); }
+.bad .bar-fill { background: var(--coral); box-shadow: 0 0 8px rgba(230,92,58,0.4); }
+
+.card-div { height: 1px; background: rgba(255,255,255,0.05); margin-bottom: 0.8rem; }
+.card-status { font-size: 0.75rem; font-weight: 600; margin-bottom: 0.55rem; line-height: 1.4; }
+.ok .card-status { color: #6aafd4; }
+.warn .card-status { color: var(--gold); }
+.bad .card-status { color: var(--coral); }
+
+.action-box { border-radius: 7px; padding: 0.55rem 0.7rem; font-size: 0.7rem; font-weight: 500; line-height: 1.55; }
+.warn .action-box { background: rgba(255,199,39,0.07); border: 1px solid rgba(255,199,39,0.15); color: #b38a00; }
+.bad .action-box { background: rgba(230,92,58,0.07); border: 1px solid rgba(230,92,58,0.15); color: #c06040; }
+.action-lbl { font-size: 0.56rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.25rem; opacity: 0.65; }
+
+/* BOTTOM */
+.bottom { display: grid; grid-template-columns: 2fr 1fr; gap: 0.875rem; }
+.panel { background: var(--navy2); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 1.125rem; }
+.panel-title { font-size: 0.58rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.875rem; display: flex; align-items: center; gap: 0.6rem; }
+.panel-title::after { content:''; flex:1; height:1px; background:rgba(255,255,255,0.05); }
+
+.act-item { display: flex; align-items: flex-start; gap: 0.65rem; padding: 0.65rem 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.act-item:last-child { border-bottom: none; padding-bottom: 0; }
+.act-num { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.58rem; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+.n-bad { background: var(--coral-dim); color: var(--coral); border: 1px solid rgba(230,92,58,0.3); }
+.n-warn { background: var(--gold-dim); color: var(--gold-dark); border: 1px solid rgba(255,199,39,0.3); }
+.n-ok { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(0,125,186,0.3); }
+.act-title { font-size: 0.8rem; font-weight: 600; color: var(--white); line-height: 1.35; }
+.act-detail { font-size: 0.6rem; font-weight: 600; color: var(--muted); letter-spacing: 0.07em; margin-top: 0.18rem; text-transform: uppercase; }
+
+.sys-item { display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 0.75rem; }
+.sys-item:last-child { border-bottom: none; }
+.sys-name { color: var(--text); font-weight: 500; }
+.sys-dot { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.06em; }
+.d-ok { color: var(--blue); }
+.d-warn { color: var(--gold); }
+.d-bad { color: var(--coral); }
+
+/* TICKER */
+.ticker { background: var(--navy); border-top: 1px solid rgba(255,255,255,0.05); padding: 0.55rem 0; overflow: hidden; position: relative; }
+.ticker::before,.ticker::after { content:''; position:absolute; top:0;bottom:0; width:80px; z-index:2; }
+.ticker::before { left:0; background: linear-gradient(90deg,var(--navy3),transparent); }
+.ticker::after { right:0; background: linear-gradient(270deg,var(--navy3),transparent); }
+.ticker-inner { display:flex; gap:2.5rem; animation: tick 35s linear infinite; white-space:nowrap; }
+@keyframes tick { 0%{transform:translateX(0)}100%{transform:translateX(-50%)} }
+.ti { font-size:0.6rem; font-weight:700; letter-spacing:0.1em; color:var(--muted); display:flex; align-items:center; gap:0.45rem; text-transform:uppercase; }
+.ti span { color: var(--gold); }
+.ti-sep { color: var(--blue); font-size:0.45rem; }
+
+@media(max-width:768px){
+  .grid{grid-template-columns:1fr 1fr}
+  .bottom{grid-template-columns:1fr}
+  .main{padding:1rem}
+  .goal-strip{flex-wrap:wrap;gap:0.75rem}
+  .goal-track-wrap{min-width:100%}
+}
+</style>
+</head>
+<body>
+
+<div class="tagline">Most people regret cheap — <em>never quality.</em> &nbsp;·&nbsp; Owner-operated. Fully insured. Locally trusted.</div>
+
+<header class="header">
+  <div class="logo-group">
+    <div class="logo-badge">🌿</div>
+    <div>
+      <div class="logo-name">Mr. <span>Juniper</span></div>
+      <div class="logo-sub">Mission Control · El Centro, CA</div>
+    </div>
   </div>
+  <div class="header-right">
+    <div class="live-pill"><div class="pulse"></div>Live</div>
+    <div class="timestamp" id="ts">—</div>
+  </div>
+</header>
 
-  <div id="solar-calculator" style="max-width: 600px; margin: 2rem auto; font-family: Futura, sans-serif; border: 4px solid #1C1C1E; border-radius: 12px; background: #FFFFFF; padding: 2rem; position: relative;">
-    <h2 style="color: #FC4800;">Juniper's Solar Savings Estimator</h2>
-
-    <label style="font-weight: bold; display: block; margin-top: 1rem;">Number of Panels</label>
-    <input type="number" id="numPanels" value="15" min="15" style="width: 100%; padding: 0.5rem; margin-bottom: 0.5rem; border: 2px solid #1C1C1E;" />
-
-    <label style="font-weight: bold;">Cleanliness Level</label>
-    <div style="display: flex; gap: 1rem; margin: 1rem 0;">
-      <button id="surfaceBtn" onclick="selectDirtiness('surface')" style="flex: 1; padding: 1rem; border: 3px solid #FC4800; background: #FC4800; color: white; font-weight: bold; border-radius: 8px; cursor: pointer;">
-        Light Dust
-        <div style="font-weight: normal; font-size: 0.85rem;">Mild dirt</div>
-      </button>
-      <button id="deepBtn" onclick="selectDirtiness('deep')" style="flex: 1; padding: 1rem; border: 3px solid #1C1C1E; background: #FFFFFF; color: #1C1C1E; font-weight: bold; border-radius: 8px; cursor: pointer;">
-        Heavy Buildup
-        <div style="font-weight: normal; font-size: 0.85rem;">Thick grime / droppings</div>
-      </button>
-    </div>
-
-    <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: bold;">
-      <input type="checkbox" id="biAnnualToggle" style="transform: scale(1.2); margin: 0;" />
-      Estimate with Bi-Annual Cleaning Plan
-    </label>
-
-    <button onclick="calculateSavings()" style="background-color: #FC4800; color: white; font-weight: bold; border: none; padding: 0.75rem 1.5rem; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 1rem;">Calculate Savings</button>
-
-    <div id="commercialPrompt" style="display: none; margin-top: 1rem; background: #FFF3E0; border: 2px solid #FC4800; padding: 1rem; border-radius: 8px;">
-      <p>This looks like a commercial or solar farm job. Would you like a commercial quote?</p>
-      <button id="commercialYes" style="background: #FC4800; color: white; font-weight: bold; border: none; padding: 0.5rem 1rem; border-radius: 4px; margin-right: 0.5rem;">Yes</button>
-      <button id="commercialNo" style="background: #1C1C1E; color: white; font-weight: bold; border: none; padding: 0.5rem 1rem; border-radius: 4px;">No</button>
-    </div>
-
-    <div id="results" style="margin-top: 2rem; padding: 1rem; background-color: #F5F5F5; border-radius: 8px; color: #1C1C1E;"></div>
-
-    <p style="margin-top: 1.5rem; font-size: 0.8rem; color: #888; text-align: center;">
-      <em>Disclaimer:</em> All figures shown are estimates based on average solar output, local sun exposure, and current IID utility rates. Actual savings may vary based on system condition, shading, maintenance history, and environmental factors. Juniper Solar Cleaning Co. is not liable for financial decisions made based on this tool.
-    </p>
+<div class="goal-strip">
+  <div><div class="goal-lbl">Monthly Revenue</div></div>
+  <div class="goal-nums">
+    <div class="goal-curr">$5,143</div>
+    <div class="goal-sep">/</div>
+    <div class="goal-tgt">$6,332</div>
+  </div>
+  <div class="goal-badge">81% to goal</div>
+  <div class="goal-track-wrap">
+    <div class="goal-track"><div class="goal-fill"></div></div>
+  </div>
+  <div class="goal-gap-group">
+    <div class="goal-gap-amt">$1,189</div>
+    <div class="goal-gap-lbl">Gap to close</div>
   </div>
 </div>
 
-<!-- Calculator Logic -->
-<script>
-  let selectedDirtiness = 0.18;
-  let selectedPricing = 'light';
-  let storedNumPanels = 15;
+<div class="main">
+  <div class="grid">
 
-  function selectDirtiness(level) {
-    selectedPricing = level;
-    if (level === 'surface') {
-      selectedDirtiness = 0.18;
-      document.getElementById('surfaceBtn').style.backgroundColor = '#FC4800';
-      document.getElementById('surfaceBtn').style.color = 'white';
-      document.getElementById('surfaceBtn').style.borderColor = '#FC4800';
-
-      document.getElementById('deepBtn').style.backgroundColor = '#FFFFFF';
-      document.getElementById('deepBtn').style.color = '#1C1C1E';
-      document.getElementById('deepBtn').style.borderColor = '#1C1C1E';
-    } else {
-      selectedDirtiness = 0.30;
-      document.getElementById('deepBtn').style.backgroundColor = '#FC4800';
-      document.getElementById('deepBtn').style.color = 'white';
-      document.getElementById('deepBtn').style.borderColor = '#FC4800';
-
-      document.getElementById('surfaceBtn').style.backgroundColor = '#FFFFFF';
-      document.getElementById('surfaceBtn').style.color = '#1C1C1E';
-      document.getElementById('surfaceBtn').style.borderColor = '#1C1C1E';
-    }
-  }
-
-  function runResidentialEstimate(numPanels) {
-    const panelWattage = 0.375;
-    const PSH = 7.5;
-    const daysPerYear = 365;
-    const baseRate = 0.1976;
-    const futureRates = [0.2230, 0.2335, 0.2438, 0.2545];
-    const biAnnual = document.getElementById('biAnnualToggle').checked;
-
-    const systemSize = numPanels * panelWattage;
-    const cleanOutput = systemSize * PSH * daysPerYear;
-    const lostOutput = (cleanOutput / 2) * selectedDirtiness;
-    const recoveredEnergy = biAnnual ? lostOutput * 2 : lostOutput;
-    const grossSavings = recoveredEnergy * baseRate;
-
-    let cost = 0;
-    let basePanels = 15;
-    let overage = numPanels - basePanels;
-
-    if (selectedPricing === 'surface' && !biAnnual) cost = 180 + (overage > 0 ? overage * 7 : 0);
-    if (selectedPricing === 'deep' && !biAnnual) cost = 225 + (overage > 0 ? overage * 9 : 0);
-    if (selectedPricing === 'surface' && biAnnual) cost = 330 + (overage > 0 ? overage * 5 * 2 : 0);
-    if (selectedPricing === 'deep' && biAnnual) cost = 400 + (overage > 0 ? overage * 7 * 2 : 0);
-
-    const netSavings = grossSavings - cost;
-    let fiveYearGross = grossSavings;
-    futureRates.forEach(rate => fiveYearGross += recoveredEnergy * rate);
-    const fiveYearNet = fiveYearGross - (cost * 5);
-
-    let html = `
-      <h3 style="color: #FC4800;">Estimated Annual Savings</h3>
-      <p><strong>System Size:</strong> ${systemSize.toFixed(2)} kW</p>
-      <p><strong>Annual Clean Output:</strong> ${cleanOutput.toFixed(0)} kWh</p>
-      <p><strong>Recovered Energy:</strong> ${recoveredEnergy.toFixed(0)} kWh</p>
-      <p><strong>Gross Savings:</strong> <span style="color: #F5A623;">$${grossSavings.toFixed(2)}</span></p>
-      <p><strong>Service Cost:</strong> <span style="color: #D0021B;">-$${cost.toFixed(2)}</span></p>
-      <p><strong style="color: #1C1C1E;">Net Savings (This Year):</strong> <span style="color: #7ED321;">$${netSavings.toFixed(2)}</span></p>
-    `;
-
-    html += `<p style="margin-top: 0.5rem;">(Based on ${biAnnual ? 'two cleanings' : 'one cleaning'} per year)</p>`;
-
-    if (numPanels >= 30) {
-      html += `
-        <hr style="margin: 1rem 0;">
-        <div style="background: #FFF3E0; border: 2px dashed #FC4800; padding: 1rem; border-radius: 8px;">
-          <strong>Recommendation:</strong><br>
-          With 30+ panels, consider a <strong>quarterly plan</strong> to maximize efficiency year-round.
-        </div>
-      `;
-    }
-
-    html += `
-      <div style="margin-top: 1rem; background: #E6F4EA; padding: 1rem; border-left: 6px solid #7ED321; border-radius: 6px;">
-        <strong>Even just 5% efficiency gain adds up.</strong><br>
-        But this isn’t just about savings — it protects your <strong>$20,000+ system</strong>, prevents long-term damage, and keeps your home looking great.
+    <!-- LEADS — BAD -->
+    <div class="card bad">
+      <div class="card-head">
+        <div class="card-lbl">Leads This Week</div>
+        <div class="chip chip-bad">Below Target</div>
       </div>
+      <div class="card-val">1</div>
+      <div class="card-meta">Target — 3+ leads / week</div>
+      <div class="bar"><div class="bar-fill" style="width:33%"></div></div>
+      <div class="card-div"></div>
+      <div class="card-status">Pipeline is thin — needs action now</div>
+      <div class="action-box">
+        <div class="action-lbl">→ Take action now</div>
+        Post to Imperial Valley Facebook groups · Door knock outlet mall route · Ask last 3 clients for referrals · Drop yard signs near recent jobs
+      </div>
+    </div>
 
-      <p style="margin-top: 1rem; font-size: 0.9rem; color: #1C1C1E;">
-        <strong>5-Year Net Savings:</strong> <span style="color: #4CAF50;">$${fiveYearNet.toFixed(2)}</span><br>
-        Based on rising IID rates: 22.3¢ (2026), 24.4¢ (2028), and beyond.
-      </p>
-    `;
+    <!-- CONVERSION — WARN -->
+    <div class="card warn">
+      <div class="card-head">
+        <div class="card-lbl">Conversion Rate</div>
+        <div class="chip chip-warn">Watch This</div>
+      </div>
+      <div class="card-val">33%</div>
+      <div class="card-meta">Target — 40%+ conversion</div>
+      <div class="bar"><div class="bar-fill" style="width:33%"></div></div>
+      <div class="card-div"></div>
+      <div class="card-status">Trending low — follow-ups needed</div>
+      <div class="action-box">
+        <div class="action-lbl">→ Recommended action</div>
+        Follow up all open quotes today · Use transparency pitch · Lead with "most people regret cheap — never quality"
+      </div>
+    </div>
 
-    document.getElementById('results').innerHTML = html;
-  }
+    <!-- REVENUE — WARN -->
+    <div class="card warn">
+      <div class="card-head">
+        <div class="card-lbl">Revenue Pace</div>
+        <div class="chip chip-warn">19% Behind</div>
+      </div>
+      <div class="card-val">81%</div>
+      <div class="card-meta">Target — within 5% of $6,332</div>
+      <div class="bar"><div class="bar-fill" style="width:81%"></div></div>
+      <div class="card-div"></div>
+      <div class="card-status">$1,189 gap — close with 5 jobs</div>
+      <div class="action-box">
+        <div class="action-lbl">→ Recommended action</div>
+        Book 2 solar or PW jobs this week · Quote open leads today · Prioritize on-route stops
+      </div>
+    </div>
 
-  function calculateSavings() {
-    const input = document.getElementById('numPanels');
-    let numPanels = parseFloat(input.value);
-    const floatingWarning = document.getElementById('floatingWarning');
+    <!-- REVIEWS — BAD -->
+    <div class="card bad">
+      <div class="card-head">
+        <div class="card-lbl">Google Reviews</div>
+        <div class="chip chip-bad">No Reviews</div>
+      </div>
+      <div class="card-val">0</div>
+      <div class="card-meta">Target — 2+ new reviews / month</div>
+      <div class="bar"><div class="bar-fill" style="width:0%"></div></div>
+      <div class="card-div"></div>
+      <div class="card-status">No new reviews this month</div>
+      <div class="action-box">
+        <div class="action-lbl">→ Take action now</div>
+        Text review link to last 3 clients via Quo · Ask at next job in person · Technician earns $10 per 5-star review
+      </div>
+    </div>
 
-    if (isNaN(numPanels) || numPanels < 15) {
-      floatingWarning.style.display = 'block';
-      floatingWarning.style.opacity = 1;
-      setTimeout(() => {
-        floatingWarning.style.opacity = 0;
-        setTimeout(() => {
-          floatingWarning.style.display = 'none';
-          input.value = 15;
-        }, 500);
-      }, 2000);
-      return;
-    }
+    <!-- TASKS — WARN -->
+    <div class="card warn">
+      <div class="card-head">
+        <div class="card-lbl">Overdue Tasks</div>
+        <div class="chip chip-warn">4 Overdue</div>
+      </div>
+      <div class="card-val">4</div>
+      <div class="card-meta">Target — 0 overdue</div>
+      <div class="bar"><div class="bar-fill" style="width:55%"></div></div>
+      <div class="card-div"></div>
+      <div class="card-status">4 tasks past their due date</div>
+      <div class="action-box">
+        <div class="action-lbl">→ Priority items</div>
+        Perla agreement · Calvin Klein scheduling · Lowes reprice at renewal · Log pane counts for 6 accounts
+      </div>
+    </div>
 
-    storedNumPanels = numPanels;
-    if (numPanels > 20) {
-      document.getElementById('commercialPrompt').style.display = 'block';
-      document.getElementById('results').innerHTML = '';
-      return;
-    }
+    <!-- TAX — BAD -->
+    <div class="card bad">
+      <div class="card-head">
+        <div class="card-lbl">Tax Account</div>
+        <div class="chip chip-bad">Critical</div>
+      </div>
+      <div class="card-val">$300</div>
+      <div class="card-meta">Target — 25% of every payment</div>
+      <div class="bar"><div class="bar-fill" style="width:11%"></div></div>
+      <div class="card-div"></div>
+      <div class="card-status">Q2 taxes due June 16, 2026</div>
+      <div class="action-box">
+        <div class="action-lbl">→ Urgent — act today</div>
+        Move 25% of every incoming payment to Mercury tax account immediately — no exceptions
+      </div>
+    </div>
 
-    runResidentialEstimate(numPanels);
-  }
+  </div>
 
-  document.getElementById('commercialYes').addEventListener('click', () => {
-    document.getElementById('commercialPrompt').style.display = 'none';
-    document.getElementById('results').innerHTML = '<p><strong>We will follow up with a custom quote for commercial or solar farm jobs.</strong></p>';
-  });
+  <div class="bottom">
 
-  document.getElementById('commercialNo').addEventListener('click', () => {
-    document.getElementById('commercialPrompt').style.display = 'none';
-    runResidentialEstimate(storedNumPanels);
-  });
+    <div class="panel">
+      <div class="panel-title">Priority Action Queue</div>
+      <div class="act-item">
+        <div class="act-num n-bad">1</div>
+        <div><div class="act-title">Move 25% of every payment to Mercury tax account</div><div class="act-detail">Q2 due June 16 · Only $300 set aside · Urgent</div></div>
+      </div>
+      <div class="act-item">
+        <div class="act-num n-bad">2</div>
+        <div><div class="act-title">Draft and send Perla service agreement</div><div class="act-detail">$3,366/mo · No written agreement · Highest exposure</div></div>
+      </div>
+      <div class="act-item">
+        <div class="act-num n-bad">3</div>
+        <div><div class="act-title">Quote open leads with new 2026 pricebook</div><div class="act-detail">Leads waiting · Conversion rate low · Act today</div></div>
+      </div>
+      <div class="act-item">
+        <div class="act-num n-warn">4</div>
+        <div><div class="act-title">Get Calvin Klein on Jobber recurring schedule</div><div class="act-detail">$119/mo · Not yet scheduled · Revenue at risk</div></div>
+      </div>
+      <div class="act-item">
+        <div class="act-num n-warn">5</div>
+        <div><div class="act-title">Log pane counts for 6 unverified accounts</div><div class="act-detail">Waterfly · MK · Tommy H · Optom Mall/Imp · CK</div></div>
+      </div>
+      <div class="act-item">
+        <div class="act-num n-warn">6</div>
+        <div><div class="act-title">Text review request to last 3 completed clients</div><div class="act-detail">0 reviews this month · Send via Quo now</div></div>
+      </div>
+      <div class="act-item">
+        <div class="act-num n-ok">7</div>
+        <div><div class="act-title">Build downtown route around Sweet Nothings</div><div class="act-detail">Target 3+ stops · Door knock area on next field day</div></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">System Status</div>
+      <div class="sys-item"><div class="sys-name">Jobber CRM</div><div class="sys-dot d-ok">● Connected</div></div>
+      <div class="sys-item"><div class="sys-name">Notion OS</div><div class="sys-dot d-ok">● Live</div></div>
+      <div class="sys-item"><div class="sys-name">Mercury Banking</div><div class="sys-dot d-ok">● Connected</div></div>
+      <div class="sys-item"><div class="sys-name">Quo Messaging</div><div class="sys-dot d-ok">● Active</div></div>
+      <div class="sys-item"><div class="sys-name">Canva / Brand</div><div class="sys-dot d-ok">● Active</div></div>
+      <div class="sys-item"><div class="sys-name">Zapier Automations</div><div class="sys-dot d-warn">● Pending Setup</div></div>
+      <div class="sys-item"><div class="sys-name">Claude Cowork</div><div class="sys-dot d-warn">● Pending Setup</div></div>
+      <div class="sys-item"><div class="sys-name">Framer Website</div><div class="sys-dot d-warn">● In Progress</div></div>
+      <div class="sys-item"><div class="sys-name">Perla Agreement</div><div class="sys-dot d-bad">● Not Signed</div></div>
+      <div class="sys-item"><div class="sys-name">Tax Account Q2</div><div class="sys-dot d-bad">● Underfunded</div></div>
+    </div>
+
+  </div>
+</div>
+
+<div class="ticker">
+  <div class="ticker-inner">
+    <div class="ti"><span class="ti-sep">◆</span> MRR <span>$5,143</span></div>
+    <div class="ti"><span class="ti-sep">◆</span> Goal <span>$6,332</span></div>
+    <div class="ti"><span class="ti-sep">◆</span> Gap <span>$1,189</span></div>
+    <div class="ti"><span class="ti-sep">◆</span> Recurring Clients <span>20</span></div>
+    <div class="ti"><span class="ti-sep">◆</span> Perla <span>$3,366/mo — No Agreement</span></div>
+    <div class="ti"><span class="ti-sep">◆</span> Tax Due <span>June 16, 2026</span></div>
+    <div class="ti"><span class="ti-sep">◆</span> Field Days <span>17/month</span></div>
+    <div class="ti"><span class="ti-sep">◆</span> Commercial Min <span>$95</span></div>
+    <div class="ti"><span class="ti-sep">◆</span> Residential Min <span>$120</span></div>
+    <div class="ti"><span class="ti-sep">◆</span> Solar 2-Story <span>$12.50/panel</span></div>
+    <div class="ti"><span class="ti-sep">◆</span> Windows Both Sides <span>$18/window</span></div>
+    <div class="ti"><span class="ti-sep">◆</span> MRR <span>$5,143</span></div>
+    <div class="ti"><span class="ti-sep">◆</span> Goal <span>$6,332</span></div>
+    <div class="ti"><span class="ti-sep">◆</span> Gap <span>$1,189</span></div>
+    <div class="ti"><span class="ti-sep">◆</span> Recurring Clients <span>20</span></div>
+    <div class="ti"><span class="ti-sep">◆</span> Perla <span>$3,366/mo — No Agreement</span></div>
+    <div class="ti"><span class="ti-sep">◆</span> Tax Due <span>June 16, 2026</span></div>
+    <div class="ti"><span class="ti-sep">◆</span> Field Days <span>17/month</span></div>
+    <div class="ti"><span class="ti-sep">◆</span> Commercial Min <span>$95</span></div>
+    <div class="ti"><span class="ti-sep">◆</span> Residential Min <span>$120</span></div>
+    <div class="ti"><span class="ti-sep">◆</span> Solar 2-Story <span>$12.50/panel</span></div>
+    <div class="ti"><span class="ti-sep">◆</span> Windows Both Sides <span>$18/window</span></div>
+  </div>
+</div>
+
+<script>
+function tick(){const n=new Date();document.getElementById('ts').textContent=n.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' · '+n.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});}
+tick();setInterval(tick,60000);
 </script>
+</body>
+</html>
