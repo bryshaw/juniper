@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mr. Juniper — Morning Briefing</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Montserrat:wght@300;400;500;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue: #007DBA;
+  --blue-light: #e8f4fb;
+  --blue-mid: #005f8e;
+  --gold: #FFC727;
+  --gold-dark: #cc9e00;
+  --gold-light: #fff8e1;
+  --coral: #E65C3A;
+  --coral-light: #fdf0ec;
+  --navy: #283044;
+  --cream: #FEF6E4;
+  --neutral: #F2F3F2;
+  --white: #ffffff;
+  --text: #1a2332;
+  --muted: #6b7a8d;
+  --border: #e2e8ed;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  background: var(--cream);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* HEADER */
+.header {
+  background: var(--navy);
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+}
+.header-top {
+  background: var(--blue);
+  padding: 0.5rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.header-tagline {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.8);
+}
+.header-tagline em { color: var(--gold); font-style: normal; }
+.header-date-pill {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  color: rgba(255,255,255,0.7);
+  letter-spacing: 0.1em;
+}
+
+.header-main {
+  padding: 2rem 2rem 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+.logo-group { display: flex; align-items: center; gap: 1rem; }
+.logo-mark {
+  width: 52px; height: 52px;
+  background: var(--blue);
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem;
+  flex-shrink: 0;
+  box-shadow: 0 4px 16px rgba(0,125,186,0.4);
+}
+.logo-text {}
+.logo-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--white);
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+.logo-name span { color: var(--gold); }
+.logo-sub {
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+  margin-top: 0.25rem;
+}
+
+.header-greeting {}
+.greeting-label {
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 0.2rem;
+}
+.greeting-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1.2;
+}
+.greeting-text span { color: var(--gold); }
+
+/* REVENUE STRIP */
+.revenue-strip {
+  background: rgba(255,255,255,0.05);
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+.rev-item { display: flex; flex-direction: column; gap: 0.15rem; }
+.rev-label {
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+}
+.rev-value {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1;
+}
+.rev-value.gold { color: var(--gold); }
+.rev-value.coral { color: var(--coral); }
+.rev-divider { width: 1px; height: 32px; background: rgba(255,255,255,0.1); }
+.rev-bar-group { flex: 1; min-width: 160px; }
+.rev-bar-label {
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 0.4rem;
+  display: flex;
+  justify-content: space-between;
+}
+.rev-bar-track {
+  height: 6px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.rev-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--blue), #00b4e0);
+  border-radius: 3px;
+  box-shadow: 0 0 10px rgba(0,125,186,0.5);
+  transition: width 1s ease;
+}
+
+/* MAIN */
+.main { padding: 1.5rem 2rem 3rem; max-width: 1100px; margin: 0 auto; }
+
+/* STATUS CARDS */
+.status-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+.status-card {
+  background: var(--white);
+  border-radius: 12px;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+.status-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+.status-card.blue::before { background: var(--blue); }
+.status-card.gold::before { background: var(--gold); }
+.status-card.coral::before { background: var(--coral); }
+.status-card.navy::before { background: var(--navy); }
+.sc-label {
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+}
+.sc-value {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 0.2rem;
+}
+.blue .sc-value { color: var(--blue); }
+.gold .sc-value { color: var(--gold-dark); }
+.coral .sc-value { color: var(--coral); }
+.navy .sc-value { color: var(--navy); }
+.sc-sub {
+  font-size: 0.65rem;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+/* TWO COL LAYOUT */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+.full-col { margin-bottom: 1rem; }
+
+/* SECTION CARD */
+.section-card {
+  background: var(--white);
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.section-head {
+  padding: 0.875rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+.section-head.blue { background: var(--blue); }
+.section-head.gold { background: var(--gold); }
+.section-head.coral { background: var(--coral); }
+.section-head.navy { background: var(--navy); }
+.section-head.cream { background: var(--cream); border-bottom-color: var(--border); }
+.section-icon { font-size: 1rem; flex-shrink: 0; }
+.section-title {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.section-head.blue .section-title,
+.section-head.coral .section-title,
+.section-head.navy .section-title { color: rgba(255,255,255,0.9); }
+.section-head.gold .section-title { color: var(--navy); }
+.section-head.cream .section-title { color: var(--muted); }
+.section-badge {
+  margin-left: auto;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 0.2rem 0.6rem;
+  border-radius: 100px;
+}
+.section-head.blue .section-badge { background: rgba(255,255,255,0.15); color: var(--white); }
+.section-head.gold .section-badge { background: rgba(40,48,68,0.15); color: var(--navy); }
+.section-head.coral .section-badge { background: rgba(255,255,255,0.15); color: var(--white); }
+.section-body { padding: 1.125rem 1.25rem; }
+
+/* ITEMS */
+.item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--neutral);
+}
+.item:last-child { border-bottom: none; padding-bottom: 0; }
+.item-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+.dot-red { background: var(--coral); }
+.dot-yellow { background: var(--gold); }
+.dot-blue { background: var(--blue); }
+.dot-green { background: #2d9e5f; }
+.item-body { flex: 1; }
+.item-title {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.35;
+}
+.item-detail {
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: var(--muted);
+  margin-top: 0.15rem;
+  letter-spacing: 0.04em;
+}
+.item-amount {
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--navy);
+  flex-shrink: 0;
+}
+
+/* MERCURY ACCOUNTS */
+.mercury-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+.mercury-account {
+  background: var(--neutral);
+  border-radius: 10px;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+}
+.mercury-name {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.3rem;
+}
+.mercury-balance {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--navy);
+}
+.mercury-account.alert-account { border-color: var(--coral); background: var(--coral-light); }
+.mercury-account.alert-account .mercury-balance { color: var(--coral); }
+.mercury-account.alert-account .mercury-name { color: var(--coral); }
+
+/* SOCIAL SECTION */
+.social-post-card {
+  background: var(--navy);
+  border-radius: 12px;
+  padding: 1.125rem;
+  margin-bottom: 0.75rem;
+}
+.sp-platform {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+.sp-platform-badge {
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.6rem;
+  border-radius: 100px;
+  background: var(--blue);
+  color: var(--white);
+}
+.sp-time {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  color: rgba(255,255,255,0.4);
+}
+.sp-caption {
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.85);
+  line-height: 1.65;
+  margin-bottom: 0.75rem;
+}
+.sp-hashtags {
+  font-size: 0.72rem;
+  color: var(--blue);
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+/* SHOOT TODAY */
+.shoot-card {
+  background: var(--gold-light);
+  border: 1px solid rgba(255,199,39,0.3);
+  border-radius: 10px;
+  padding: 0.875rem;
+  margin-bottom: 0.6rem;
+}
+.shoot-job {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+  margin-bottom: 0.35rem;
+}
+.shoot-instruction {
+  font-size: 0.8rem;
+  color: var(--navy);
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+/* FOCUS CARD */
+.focus-card {
+  background: var(--navy);
+  border-radius: 14px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1.25rem;
+}
+.focus-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 4rem;
+  font-weight: 900;
+  color: rgba(255,199,39,0.2);
+  line-height: 1;
+  flex-shrink: 0;
+}
+.focus-body {}
+.focus-label {
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.4rem;
+}
+.focus-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1.3;
+  margin-bottom: 0.5rem;
+}
+.focus-detail {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.6;
+}
+
+/* WEATHER */
+.weather-strip {
+  background: var(--blue-light);
+  border: 1px solid rgba(0,125,186,0.15);
+  border-radius: 10px;
+  padding: 0.875rem 1.125rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 0.6rem;
+}
+.weather-temp {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--blue);
+  line-height: 1;
+}
+.weather-info { flex: 1; }
+.weather-condition { font-size: 0.82rem; font-weight: 600; color: var(--navy); }
+.weather-note { font-size: 0.7rem; color: var(--muted); margin-top: 0.15rem; }
+.weather-solar {
+  background: var(--blue);
+  color: var(--white);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.75rem;
+  border-radius: 100px;
+}
+.weather-solar.bad { background: var(--coral); }
+
+/* SCHEDULE */
+.schedule-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--neutral);
+}
+.schedule-item:last-child { border-bottom: none; }
+.schedule-time {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--muted);
+  min-width: 60px;
+  font-weight: 500;
+}
+.schedule-body { flex: 1; }
+.schedule-job { font-size: 0.82rem; font-weight: 600; color: var(--text); }
+.schedule-client { font-size: 0.65rem; color: var(--muted); margin-top: 0.1rem; }
+.schedule-value {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+/* TASKS */
+.task-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--neutral);
+}
+.task-item:last-child { border-bottom: none; }
+.task-priority {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.58rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.p-red { background: var(--coral-light); color: var(--coral); border: 1px solid rgba(230,92,58,0.3); }
+.p-yellow { background: var(--gold-light); color: var(--gold-dark); border: 1px solid rgba(255,199,39,0.3); }
+.p-blue { background: var(--blue-light); color: var(--blue); border: 1px solid rgba(0,125,186,0.3); }
+.task-text { font-size: 0.8rem; font-weight: 500; color: var(--text); line-height: 1.4; }
+.task-meta { font-size: 0.6rem; color: var(--muted); margin-top: 0.15rem; }
+
+/* FOOTER */
+.briefing-footer {
+  text-align: center;
+  padding: 2rem 0 1rem;
+  border-top: 1px solid var(--border);
+  margin-top: 2rem;
+}
+.footer-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 0.25rem;
+}
+.footer-logo span { color: var(--blue); }
+.footer-line {
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.footer-line em { color: var(--gold-dark); font-style: normal; }
+
+/* LOADING */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--navy);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  transition: opacity 0.5s ease;
+}
+.loading-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--white);
+  margin-bottom: 0.5rem;
+}
+.loading-logo span { color: var(--gold); }
+.loading-sub {
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 2rem;
+}
+.loading-status {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--blue);
+  letter-spacing: 0.08em;
+  margin-bottom: 1rem;
+  min-height: 1.2em;
+}
+.loading-bar {
+  width: 200px;
+  height: 3px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.loading-fill {
+  height: 100%;
+  background: var(--blue);
+  border-radius: 2px;
+  box-shadow: 0 0 8px var(--blue);
+  transition: width 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .status-row { grid-template-columns: 1fr 1fr; }
+  .two-col { grid-template-columns: 1fr; }
+  .three-col { grid-template-columns: 1fr; }
+  .mercury-grid { grid-template-columns: 1fr 1fr; }
+  .header-main { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .main { padding: 1rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="loading-overlay" id="loading">
+  <div class="loading-logo">Mr. <span>Juniper</span></div>
+  <div class="loading-sub">Morning Briefing</div>
+  <div class="loading-status" id="loading-status">Connecting to data sources...</div>
+  <div class="loading-bar"><div class="loading-fill" id="loading-fill" style="width:0%"></div></div>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-top">
+    <div class="header-tagline">Most people regret cheap — <em>never quality.</em> &nbsp;·&nbsp; Owner-operated. Fully insured. Locally trusted.</div>
+    <div class="header-date-pill" id="header-date">Saturday, May 9, 2026</div>
+  </div>
+  <div class="header-main">
+    <div class="logo-group">
+      <div class="logo-mark">🌿</div>
+      <div class="logo-text">
+        <div class="logo-name">Mr. <span>Juniper</span></div>
+        <div class="logo-sub">Morning Briefing · El Centro, CA</div>
+      </div>
+    </div>
+    <div class="header-greeting">
+      <div class="greeting-label">Good morning</div>
+      <div class="greeting-text" id="greeting">Let's build something <span>great</span> today.</div>
+    </div>
+  </div>
+  <div class="revenue-strip">
+    <div class="rev-item">
+      <div class="rev-label">Monthly MRR</div>
+      <div class="rev-value">$5,143</div>
+    </div>
+    <div class="rev-divider"></div>
+    <div class="rev-item">
+      <div class="rev-label">Goal</div>
+      <div class="rev-value">$6,332</div>
+    </div>
+    <div class="rev-divider"></div>
+    <div class="rev-item">
+      <div class="rev-label">Gap</div>
+      <div class="rev-value gold">$1,189</div>
+    </div>
+    <div class="rev-divider"></div>
+    <div class="rev-bar-group">
+      <div class="rev-bar-label">
+        <span>Revenue to goal</span>
+        <span>81%</span>
+      </div>
+      <div class="rev-bar-track">
+        <div class="rev-bar-fill" id="rev-bar" style="width:0%"></div>
+      </div>
+    </div>
+    <div class="rev-divider"></div>
+    <div class="rev-item">
+      <div class="rev-label">Tax Account</div>
+      <div class="rev-value coral">$332.99</div>
+    </div>
+    <div class="rev-divider"></div>
+    <div class="rev-item">
+      <div class="rev-label">Days to Q2 Tax</div>
+      <div class="rev-value coral" id="days-to-tax">38</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main" id="main-content" style="opacity:0">
+
+  <!-- STATUS CARDS -->
+  <div class="status-row">
+    <div class="status-card coral">
+      <div class="sc-label">Tax Account</div>
+      <div class="sc-value">$332</div>
+      <div class="sc-sub">🔴 Q2 due June 16 — underfunded</div>
+    </div>
+    <div class="status-card gold">
+      <div class="sc-label">Unread Messages</div>
+      <div class="sc-value">3</div>
+      <div class="sc-sub">🟡 Quo + Gmail needing reply</div>
+    </div>
+    <div class="status-card coral">
+      <div class="sc-label">Past Due Invoices</div>
+      <div class="sc-value">$558</div>
+      <div class="sc-sub">🔴 6 invoices — oldest 51 days</div>
+    </div>
+    <div class="status-card blue">
+      <div class="sc-label">New Requests</div>
+      <div class="sc-value">12</div>
+      <div class="sc-sub">🔵 4 new this week</div>
+    </div>
+  </div>
+
+  <!-- ROW 1: WEATHER + SCHEDULE -->
+  <div class="two-col">
+
+    <div class="section-card">
+      <div class="section-head blue">
+        <div class="section-icon">🌤️</div>
+        <div class="section-title">Weather & Field Conditions</div>
+      </div>
+      <div class="section-body" id="weather-body">
+        <div class="weather-strip">
+          <div class="weather-temp" id="weather-temp">—°F</div>
+          <div class="weather-info">
+            <div class="weather-condition" id="weather-condition">Loading weather...</div>
+            <div class="weather-note" id="weather-note">Checking El Centro conditions</div>
+          </div>
+          <div class="weather-solar" id="solar-status">Checking</div>
+        </div>
+        <div class="item">
+          <div class="item-dot dot-blue"></div>
+          <div class="item-body">
+            <div class="item-title">Field Day Status</div>
+            <div class="item-detail" id="field-day-status">Saturday — Admin day. Next field: Monday</div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="item-dot dot-blue"></div>
+          <div class="item-body">
+            <div class="item-title">This Week Preview</div>
+            <div class="item-detail">Mon · Wed · Thu · Fri — 4 field days available</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-head navy">
+        <div class="section-icon">📅</div>
+        <div class="section-title">Today's Schedule</div>
+        <div class="section-badge" id="jobs-badge">0 Jobs</div>
+      </div>
+      <div class="section-body" id="schedule-body">
+        <div class="schedule-item">
+          <div class="schedule-time">All day</div>
+          <div class="schedule-body">
+            <div class="schedule-job">No field jobs scheduled</div>
+            <div class="schedule-client">Saturday — admin & planning day</div>
+          </div>
+        </div>
+        <div class="item" style="margin-top:0.5rem">
+          <div class="item-dot dot-yellow"></div>
+          <div class="item-body">
+            <div class="item-title">Ana Julia Solis — Solar booked</div>
+            <div class="item-detail">May 15 · 10:00 AM · 21 panels · $189</div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="item-dot dot-blue"></div>
+          <div class="item-body">
+            <div class="item-title">Perla — 7 buildings remaining</div>
+            <div class="item-detail">5 window + 1 large solar + 1 small solar · Schedule this week</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ROW 2: EMAILS + QUO -->
+  <div class="two-col">
+
+    <div class="section-card">
+      <div class="section-head blue">
+        <div class="section-icon">📧</div>
+        <div class="section-title">Gmail — Client Messages</div>
+        <div class="section-badge">1 Urgent</div>
+      </div>
+      <div class="section-body">
+        <div class="item">
+          <div class="item-dot dot-red"></div>
+          <div class="item-body">
+            <div class="item-title">Google Workspace payment failed</div>
+            <div class="item-detail">ACTION REQUIRED · business email at risk · fix at workspace.google.com</div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="item-dot dot-blue"></div>
+          <div class="item-body">
+            <div class="item-title">No client emails in last 3 days</div>
+            <div class="item-detail">Inbox clear of client messages</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-head gold">
+        <div class="section-icon">💬</div>
+        <div class="section-title">Quo — Client Texts</div>
+        <div class="section-badge">3 Active</div>
+      </div>
+      <div class="section-body">
+        <div class="item">
+          <div class="item-dot dot-green"></div>
+          <div class="item-body">
+            <div class="item-title">Ana Julia Solis — Booked ✓</div>
+            <div class="item-detail">May 15 10am confirmed · 21 solar panels · $189</div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="item-dot dot-yellow"></div>
+          <div class="item-body">
+            <div class="item-title">Babak Movahedi — Warm Lead</div>
+            <div class="item-detail">Wants recurring solar + PW · confirmed interest · send formal quote</div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="item-dot dot-yellow"></div>
+          <div class="item-body">
+            <div class="item-title">Janice — Solar Quote Pending</div>
+            <div class="item-detail">You reached out · no reply yet · follow up Monday</div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="item-dot dot-red"></div>
+          <div class="item-body">
+            <div class="item-title">(936) 252-2178 — Remove from list</div>
+            <div class="item-detail">Replied "Stop" · remove from outreach immediately</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ROW 3: REQUESTS + INVOICES -->
+  <div class="two-col">
+
+    <div class="section-card">
+      <div class="section-head coral">
+        <div class="section-icon">🆕</div>
+        <div class="section-title">New Requests — Needs Action</div>
+        <div class="section-badge">12 Total</div>
+      </div>
+      <div class="section-body">
+        <div class="item">
+          <div class="item-dot dot-red"></div>
+          <div class="item-body">
+            <div class="item-title">(619) 348-4745 — Today</div>
+            <div class="item-detail">Quo request · came in today · call or text now</div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="item-dot dot-red"></div>
+          <div class="item-body">
+            <div class="item-title">Patricia Carrillo — Brawley</div>
+            <div class="item-detail">May 2 · 7 days waiting · (760) 412-9180</div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="item-dot dot-red"></div>
+          <div class="item-body">
+            <div class="item-title">Marci Scott — Holtville</div>
+            <div class="item-detail">May 2 · 7 days waiting · (760) 879-7336</div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="item-dot dot-yellow"></div>
+          <div class="item-body">
+            <div class="item-title">8 older requests still open</div>
+            <div class="item-detail">Scott, Jorge + 6 others from April · review in Jobber</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-head coral">
+        <div class="section-icon">💰</div>
+        <div class="section-title">Money Alerts</div>
+        <div class="section-badge">$1,413 at Risk</div>
+      </div>
+      <div class="section-body">
+        <div class="item">
+          <div class="item-dot dot-red"></div>
+          <div class="item-body">
+            <div class="item-title">Perla — Draft Invoice Unsent</div>
+            <div class="item-detail">#10565 · $855 · due on receipt · send today</div>
+          </div>
+          <div class="item-amount">$855</div>
+        </div>
+        <div class="item">
+          <div class="item-dot dot-red"></div>
+          <div class="item-body">
+            <div class="item-title">Patricia — 31 days overdue</div>
+            <div class="item-detail">#10551 · Residential Solar · Apr 8</div>
+          </div>
+          <div class="item-amount">$150</div>
+        </div>
+        <div class="item">
+          <div class="item-dot dot-red"></div>
+          <div class="item-body">
+            <div class="item-title">Optom Mall — 40 days overdue</div>
+            <div class="item-detail">#10545 · Storefront · Mar 30</div>
+          </div>
+          <div class="item-amount">$120</div>
+        </div>
+        <div class="item">
+          <div class="item-dot dot-yellow"></div>
+          <div class="item-body">
+            <div class="item-title">3 more past due invoices</div>
+            <div class="item-detail">Paola $139 · Optomeyes $104 · Vans $45</div>
+          </div>
+          <div class="item-amount">$288</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ROW 4: MERCURY -->
+  <div class="full-col">
+    <div class="section-card">
+      <div class="section-head navy">
+        <div class="section-icon">🏦</div>
+        <div class="section-title">Mercury — Account Balances</div>
+        <div class="section-badge">Profit First</div>
+      </div>
+      <div class="section-body">
+        <div class="mercury-grid">
+          <div class="mercury-account">
+            <div class="mercury-name">Income ••1852</div>
+            <div class="mercury-balance">$1,811.75</div>
+          </div>
+          <div class="mercury-account">
+            <div class="mercury-name">Owners Comp ••9261</div>
+            <div class="mercury-balance">$1,348.50</div>
+          </div>
+          <div class="mercury-account alert-account">
+            <div class="mercury-name">⚠ Taxes ••3593 — Q2 Due June 16</div>
+            <div class="mercury-balance">$332.99</div>
+          </div>
+          <div class="mercury-account">
+            <div class="mercury-name">Profit ••6026</div>
+            <div class="mercury-balance">$73.56</div>
+          </div>
+          <div class="mercury-account">
+            <div class="mercury-name">Operating Expenses ••6589</div>
+            <div class="mercury-balance">$67.03</div>
+          </div>
+          <div class="mercury-account" style="background:var(--blue);border-color:var(--blue);">
+            <div class="mercury-name" style="color:rgba(255,255,255,0.6)">Total Cash</div>
+            <div class="mercury-balance" style="color:white">$3,633.84</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 5: SOCIAL + SHOOT -->
+  <div class="two-col">
+
+    <div class="section-card">
+      <div class="section-head blue">
+        <div class="section-icon">📱</div>
+        <div class="section-title">Today's Social Posts</div>
+        <div class="section-badge" id="social-day">Saturday</div>
+      </div>
+      <div class="section-body" id="social-body">
+        <div class="social-post-card">
+          <div class="sp-platform">
+            <div class="sp-platform-badge">Instagram + Facebook</div>
+            <div class="sp-time">Post at 12:00 PM</div>
+          </div>
+          <div class="sp-caption" id="social-caption">Generating today's caption...</div>
+          <div class="sp-hashtags">#ImperialValley #WindowCleaning #MrJuniper #CleanWindows #ElCentro #LocalBusiness #SolarCleaning #PressureWashing #CareBeforeSpeed</div>
+        </div>
+        <div class="social-post-card" style="background:var(--cream);border:1px solid var(--border);">
+          <div class="sp-platform">
+            <div class="sp-platform-badge" style="background:var(--navy)">TikTok</div>
+            <div class="sp-time" style="color:var(--muted)">Post at 3:00 PM</div>
+          </div>
+          <div class="sp-caption" style="color:var(--text)" id="tiktok-caption">Generating TikTok idea...</div>
+          <div class="sp-hashtags">#CleanTok #WindowCleaning #BeforeAndAfter #ImperialValley #SmallBusiness #SolarPanels</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-head gold">
+        <div class="section-icon">📸</div>
+        <div class="section-title">Content to Shoot Today</div>
+        <div class="section-badge">Based on Jobs</div>
+      </div>
+      <div class="section-body" id="shoot-body">
+        <div class="shoot-card">
+          <div class="shoot-job">📍 No Field Jobs Today — Saturday</div>
+          <div class="shoot-instruction">Review your phone for any unsorted job photos from this week. Upload best before/afters to the Notion Image Library before Monday.</div>
+        </div>
+        <div class="shoot-card">
+          <div class="shoot-job">🎬 Content Idea — Weekend Post</div>
+          <div class="shoot-instruction">Pull your best job photo from this week. Post a Saturday "recap" — one strong before/after with a caption about what makes IVA windows so tough to keep clean. Dust, heat, hard water. Tell the story.</div>
+        </div>
+        <div class="shoot-card">
+          <div class="shoot-job">📋 Monday Prep</div>
+          <div class="shoot-instruction">Ana Julia Solis solar job is May 15. Plan to film the before on the panels — dust buildup on IVA rooftops makes for great content. Capture the panel surface temp reading too.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ROW 6: TASKS + TEAM -->
+  <div class="two-col">
+
+    <div class="section-card">
+      <div class="section-head navy">
+        <div class="section-icon">✅</div>
+        <div class="section-title">Bryan's Priority Tasks</div>
+        <div class="section-badge">Top 5</div>
+      </div>
+      <div class="section-body">
+        <div class="task-item">
+          <div class="task-priority p-red">1</div>
+          <div>
+            <div class="task-text">Fix Google Workspace payment — email at risk</div>
+            <div class="task-meta">URGENT · workspace.google.com → Billing</div>
+          </div>
+        </div>
+        <div class="task-item">
+          <div class="task-priority p-red">2</div>
+          <div>
+            <div class="task-text">Move 25% of every payment to Mercury tax account</div>
+            <div class="task-meta">Q2 DUE JUNE 16 · $332 set aside · need much more</div>
+          </div>
+        </div>
+        <div class="task-item">
+          <div class="task-priority p-red">3</div>
+          <div>
+            <div class="task-text">Send Perla draft invoice #10565 — $855</div>
+            <div class="task-meta">Sitting unsent · money ready to collect</div>
+          </div>
+        </div>
+        <div class="task-item">
+          <div class="task-priority p-yellow">4</div>
+          <div>
+            <div class="task-text">Quote Babak Movahedi — biannual solar + PW plan</div>
+            <div class="task-meta">WARM LEAD · confirmed recurring interest</div>
+          </div>
+        </div>
+        <div class="task-item">
+          <div class="task-priority p-yellow">5</div>
+          <div>
+            <div class="task-text">Get Calvin Klein on Jobber recurring schedule</div>
+            <div class="task-meta">$119/mo · not yet scheduled</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <div class="section-head cream">
+        <div class="section-icon">👥</div>
+        <div class="section-title">Team Pulse</div>
+      </div>
+      <div class="section-body">
+        <div class="item">
+          <div class="item-dot dot-blue"></div>
+          <div class="item-body">
+            <div class="item-title">Michelle — Field ready</div>
+            <div class="item-detail">No tasks overdue · next field day Monday</div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="item-dot dot-yellow"></div>
+          <div class="item-body">
+            <div class="item-title">Eve — Patrick callback pending</div>
+            <div class="item-detail">Reached out via Quo · awaiting return call · follow up Monday if no response</div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="item-dot dot-yellow"></div>
+          <div class="item-body">
+            <div class="item-title">Eve — Zapier Phase 1 setup</div>
+            <div class="item-detail">Guide delivered · check progress this week</div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="item-dot dot-blue"></div>
+          <div class="item-body">
+            <div class="item-title">Perla email — scheduled Monday</div>
+            <div class="item-detail">Property update email drafted · sends Monday</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- DAILY FOCUS -->
+  <div class="full-col">
+    <div class="focus-card">
+      <div class="focus-num">1</div>
+      <div class="focus-body">
+        <div class="focus-label">Bryan's Focus for Today</div>
+        <div class="focus-title" id="focus-title">Fix Google Workspace. Send the Perla invoice. That's it.</div>
+        <div class="focus-detail" id="focus-detail">Two things that take less than 20 minutes combined and put $855 in motion while protecting your business email. Everything else can wait until Monday. This is your Saturday.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GAP CLOSER -->
+  <div class="full-col">
+    <div class="section-card">
+      <div class="section-head gold">
+        <div class="section-icon">🎯</div>
+        <div class="section-title">Gap Closer — $1,189 Needed</div>
+      </div>
+      <div class="section-body">
+        <div class="item">
+          <div class="item-dot dot-yellow"></div>
+          <div class="item-body">
+            <div class="item-title">Babak Movahedi — biannual solar + PW plan</div>
+            <div class="item-detail">Estimated value: $300–$400 biannual · confirmed interest · quote this weekend</div>
+          </div>
+          <div class="item-amount" style="color:var(--gold-dark)">+$350</div>
+        </div>
+        <div class="item">
+          <div class="item-dot dot-yellow"></div>
+          <div class="item-body">
+            <div class="item-title">Patricia Carrillo — Brawley solar quote</div>
+            <div class="item-detail">7 days waiting · call Monday · likely $150–$250 job</div>
+          </div>
+          <div class="item-amount" style="color:var(--gold-dark)">+$200</div>
+        </div>
+        <div class="item">
+          <div class="item-dot dot-yellow"></div>
+          <div class="item-body">
+            <div class="item-title">Marci Scott — Holtville quote</div>
+            <div class="item-detail">7 days waiting · call Monday · unknown service needed</div>
+          </div>
+          <div class="item-amount" style="color:var(--gold-dark)">+$150</div>
+        </div>
+        <div class="item" style="background:var(--gold-light);border-radius:8px;padding:0.65rem 0.75rem;margin-top:0.5rem">
+          <div class="item-dot dot-yellow"></div>
+          <div class="item-body">
+            <div class="item-title" style="color:var(--gold-dark)">Close these 3 leads → gap nearly closed</div>
+            <div class="item-detail" style="color:var(--gold-dark)">$700 potential from leads already in your pipeline</div>
+          </div>
+          <div class="item-amount" style="color:var(--gold-dark)">$700</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="briefing-footer">
+    <div class="footer-logo">Mr. <span>Juniper</span></div>
+    <div class="footer-line">El Centro, CA &nbsp;·&nbsp; <em>"Most people regret cheap — never quality."</em> &nbsp;·&nbsp; <span id="footer-time"></span></div>
+  </div>
+
+</div>
+
+<script>
+// ─── DATE & TIME ─────────────────────────────────────────────────────────────
+const now = new Date();
+const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const dayName = days[now.getDay()];
+const dateStr = `${dayName}, ${months[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
+document.getElementById('header-date').textContent = dateStr;
+document.getElementById('social-day').textContent = dayName;
+document.getElementById('footer-time').textContent = now.toLocaleTimeString('en-US', {hour:'numeric',minute:'2-digit',hour12:true});
+
+// Days to Q2 tax
+const q2 = new Date('2026-06-16');
+const daysToTax = Math.ceil((q2 - now) / (1000 * 60 * 60 * 24));
+document.getElementById('days-to-tax').textContent = daysToTax;
+
+// Greeting
+const hour = now.getHours();
+let greetingTime = hour < 12 ? 'morning' : hour < 17 ? 'afternoon' : 'evening';
+const greetings = [
+  `Good ${greetingTime}, <span>Bryan.</span>`,
+  `Ready to build something <span>great</span> today.`,
+  `Let's make today <span>count.</span>`,
+];
+document.getElementById('greeting').innerHTML = greetings[now.getDay() % greetings.length];
+
+// ─── LOADING SEQUENCE ────────────────────────────────────────────────────────
+const steps = [
+  { text: 'Connecting to Jobber...', pct: 15 },
+  { text: 'Reading today\'s schedule...', pct: 25 },
+  { text: 'Checking Gmail...', pct: 38 },
+  { text: 'Loading Quo messages...', pct: 50 },
+  { text: 'Pulling Mercury balances...', pct: 63 },
+  { text: 'Checking Notion tasks...', pct: 75 },
+  { text: 'Getting weather data...', pct: 85 },
+  { text: 'Generating social content...', pct: 93 },
+  { text: 'Building your briefing...', pct: 100 },
+];
+
+let stepIdx = 0;
+function runStep() {
+  if (stepIdx >= steps.length) {
+    setTimeout(showContent, 400);
+    return;
+  }
+  const s = steps[stepIdx];
+  document.getElementById('loading-status').textContent = s.text;
+  document.getElementById('loading-fill').style.width = s.pct + '%';
+  stepIdx++;
+  setTimeout(runStep, 320 + Math.random() * 200);
+}
+
+function showContent() {
+  const loading = document.getElementById('loading');
+  loading.style.opacity = '0';
+  setTimeout(() => { loading.style.display = 'none'; }, 500);
+  const main = document.getElementById('main-content');
+  main.style.transition = 'opacity 0.6s ease';
+  main.style.opacity = '1';
+  // Animate revenue bar
+  setTimeout(() => {
+    document.getElementById('rev-bar').style.width = '81%';
+  }, 300);
+}
+
+setTimeout(runStep, 600);
+
+// ─── WEATHER ─────────────────────────────────────────────────────────────────
+async function loadWeather() {
+  try {
+    const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=32.79&longitude=-115.56&current=temperature_2m,weathercode&temperature_unit=fahrenheit&timezone=America/Los_Angeles');
+    const data = await res.json();
+    const temp = Math.round(data.current.temperature_2m);
+    document.getElementById('weather-temp').textContent = temp + '°F';
+
+    const code = data.current.weathercode;
+    let condition = 'Clear';
+    if (code >= 61) condition = 'Rainy';
+    else if (code >= 51) condition = 'Drizzle';
+    else if (code >= 45) condition = 'Foggy';
+    else if (code >= 3) condition = 'Cloudy';
+    else if (code >= 1) condition = 'Partly Cloudy';
+    document.getElementById('weather-condition').textContent = condition + ' in El Centro';
+
+    // Solar viability
+    const solarEl = document.getElementById('solar-status');
+    if (temp > 95) {
+      solarEl.textContent = '⚠ Too Hot for Solar';
+      solarEl.className = 'weather-solar bad';
+      document.getElementById('weather-note').textContent = `Panel surface temp likely exceeds safe threshold. Schedule solar for early morning only.`;
+    } else {
+      solarEl.textContent = '✓ Solar Cleaning OK';
+      solarEl.className = 'weather-solar';
+      document.getElementById('weather-note').textContent = `Good conditions for solar cleaning. Normal operations.`;
+    }
+  } catch(e) {
+    document.getElementById('weather-condition').textContent = 'Weather unavailable';
+  }
+}
+loadWeather();
+
+// ─── AI SOCIAL CONTENT ────────────────────────────────────────────────────────
+async function generateSocialContent() {
+  const today = dateStr;
+  const prompt = `You are the social media voice for Mr. Juniper — a premium, owner-operated window cleaning, solar panel cleaning, and pressure washing business in El Centro, Imperial Valley, CA. 
+
+Brand voice: Human-first. Warm. Honest. Anti-BS. Locally aware. Slightly witty. NOT salesy. NOT corporate.
+Brand phrases: "Care before speed", "We clean like we're coming back", "Most people regret cheap — never quality", "Owner-operated. Fully insured. Locally trusted."
+
+Today is ${today}. It's a Saturday — no field jobs, admin day.
+
+Generate TWO pieces of social content:
+
+1. INSTAGRAM/FACEBOOK POST (for feed): A compelling caption about window or solar cleaning in Imperial Valley. Mix of educational, trust-building, and local flavor. 2-4 sentences. Can include an emoji or two. Natural, not forced.
+
+2. TIKTOK IDEA: A short description of a TikTok video idea (not a script, just the concept). Should be raw, authentic, behind-the-scenes or educational. One sentence.
+
+Format your response as JSON only, no markdown:
+{"instagram": "caption here", "tiktok": "video idea here"}`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content[0].text.trim();
+    const clean = text.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(clean);
+    document.getElementById('social-caption').textContent = parsed.instagram;
+    document.getElementById('tiktok-caption').textContent = parsed.tiktok;
+  } catch(e) {
+    document.getElementById('social-caption').textContent = 'Imperial Valley windows take a beating — dust, heat, hard water. That\'s why we don\'t just clean them. We check them. Every job includes a 24-hour guarantee because we know what this desert does to glass. 🌿 #MrJuniper';
+    document.getElementById('tiktok-caption').textContent = 'Show a before/after of an IVA storefront window — zoom in on the hard water stains, then the squeegee reveal. Real results, no filter needed.';
+  }
+}
+generateSocialContent();
+
+// ─── AI DAILY FOCUS ───────────────────────────────────────────────────────────
+async function generateFocus() {
+  const contextPrompt = `You are the daily business advisor for Bryan, owner of Mr. Juniper cleaning company in El Centro, Imperial Valley, CA.
+
+Today is Saturday May 9, 2026. Admin day — no field work.
+
+Key facts:
+- Most urgent: Google Workspace payment failed (business email at risk)
+- $855 Perla draft invoice sitting unsent
+- Tax account has $332 — Q2 taxes due June 16
+- Babak Movahedi is a warm lead for recurring solar + PW service
+- Perla update email scheduled to send Monday
+
+Write ONE punchy, direct sentence for "Bryan's Focus for Today" — the single most important thing.
+Then write 2 sentences of supportive context (warm, direct, no fluff).
+
+Format as JSON only: {"title": "one sentence", "detail": "two sentences"}`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 300,
+        messages: [{ role: 'user', content: contextPrompt }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content[0].text.trim();
+    const clean = text.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(clean);
+    document.getElementById('focus-title').textContent = parsed.title;
+    document.getElementById('focus-detail').textContent = parsed.detail;
+  } catch(e) {
+    // fallback already in HTML
+  }
+}
+generateFocus();
+</script>
+</body>
+</html>
